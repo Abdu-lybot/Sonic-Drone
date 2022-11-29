@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<launch>
+	<!--param name="robot_description" command="$(find xacro)/xacro $(find AdvanDiptera_discription)/urdf/AdvanDiptera.xacro" />
+	<param name="use_gui" value="True"/>
+	<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" ></node>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" ></node-->
+<!--node pkg="commanding_node" name="commanding_node" type="gpio_diptera.py" output="screen" launch-prefix="sudo"></node>
+
+
+
+    <include file="$(find mavros)/launch/px4.launch" /-->
+<!--<include file="$(find realsense2_camera)/launch/rs_t265.launch" />
+<include file="$(find vision_to_mavros)/launch/tf_to_mavros.launch" />-->
+<!-- <include file="$(find astra_camera)/launch/astra.launch" /> -->
+<include file="$(find octomap_server)/launch/octomap_mapping.launch" />
+
+
+
+<!--<node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0 0 0 0 -0.47 -0.10 camera_pose_frame base_link  100" />-->
+<!--node pkg="tf" type="static_transform_publisher" name="link2_broadcaster" args="0 0 0 0 0 0 camera_pose_frame astra_link  100" /-->
+<!--<node pkg="tf" type="static_transform_publisher" name="link2_broadcaster" args="0.1 0 0.2 0 0.07 0 base_link astra_link  100" />-->
+</launch>

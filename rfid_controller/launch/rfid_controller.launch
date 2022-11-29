@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+    <node name="rfid_controller" pkg="rfid_controller" type="rfid_control.py" output="screen">
+        <rosparam file="$(find rfid_controller)/config/rfid_controller.yaml" command="load" />
+    </node>
+    <node name="database_robot" pkg="database_robot" type="database_controller.py" output="screen">
+          <rosparam file="$(find database_robot)/config/database_robot.yaml" command="load" subst_value="true" />
+    </node>
+    <node name="actionlib" pkg="actionlib" type="axclient.py" args="/rfid_controller" output="screen">
+    </node>
+
+</launch>

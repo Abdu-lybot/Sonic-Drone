@@ -1,0 +1,10 @@
+#Define the goal
+string mission_id
+string section_id
+string task
+---
+#Define the result
+bool success
+---
+#Define a feedback message
+float32 percent_complete

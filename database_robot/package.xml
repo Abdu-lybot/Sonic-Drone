@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>database_robot</name>
+  <version>2.0.0</version>
+  <description>Controlls the database access</description>
+
+  <!-- One maintainer tag required, multiple allowed, one person per tag -->
+  <maintainer email="bgaston@keonn.com">Bernat Gaston</maintainer>
+
+
+  <!-- One license tag required, multiple allowed, one license per tag -->
+  <license>copyright 2020 Keonn Technologies S.L.</license>
+
+  <!-- Url tags are optional, but mutiple are allowed, one per tag -->
+  <url type="website">http://keonn.com</url>
+
+
+  <!-- Author tags are optional, mutiple are allowed, one per tag -->
+  <author email="bgaston@keonn.com">Bernat Gaston</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>rospy</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>message_generation</build_depend>
+  <build_depend>roslaunch</build_depend>
+
+  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>rospy</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+
+  <test_depend>rosunit</test_depend>
+
+  <!-- The export tag contains other, unspecified, tags -->
+  <export>
+    <!-- Other tools can request additional information be placed here -->
+
+  </export>
+</package>

@@ -1,0 +1,8 @@
+prefix=/home/lybot/AdvanDiptera/src/steering/cmake-build-debug/devel
+
+Name: steering
+Description: Description of steering
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

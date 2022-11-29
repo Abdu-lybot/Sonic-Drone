@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/lybot/AdvanDiptera/src/steering/cmake-build-debug/devel/setup.sh

@@ -1,0 +1,8 @@
+database:
+  path: /home/ubuntu/AdvanDiptera/src/database_robot/robot.db           #Path to the database
+  order_mission: ["id_mission", "start", "finish", "sections", "task", "processed"]
+  order_shop: ["id_shop", "name", "description"]
+  order_section: ["id_section", "name", "qr_docking", "maps_path", "description", "id_shop", "prev_section"]
+  order_reading: ["id_reading", "id_mission", "id_section", "antenna_port", "timestamp", "rf_phase",
+  "rssi", "freq", "mux1", "mux2", "epc", "device_id", "robot_pose" ]
+  order_fixture: ["id_fixture", "id_shop", "id_section", "name", "area", "fix_group", "ref_tag", "x", "y", "z"]

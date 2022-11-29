@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!--node name="mavros" pkg="mavros" type="px4.launch" />
+    <node name="" pkg="" type="" />
+    <node name="" pkg="" type="" /-->
+	<include file="$(find mavros)/launch/px4.launch">
+	</include>
+	<include file="$(find px4flow)/launch/px4flow.launch">
+	</include>
+</launch>

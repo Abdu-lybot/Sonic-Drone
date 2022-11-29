@@ -1,0 +1,45 @@
+<inventory>
+	<type>inventory</type>
+	<ts>1603353691000</ts>
+	<status>OK</status>
+	<msg-version>2.3.0</msg-version>
+	<op>inventory</op>
+	<data>
+		<advanNetId>AdvanNet-instance-6e:b6:a0:61:57:9c--1</advanNetId>
+		<deviceId>reader-01</deviceId>
+		<inventory>
+			<class>INVENTORY</class>
+			<deviceId>reader-01</deviceId>
+			<size>1</size>
+			<items>
+				<item>
+					<class>READ_EVENT</class>
+					<epc>303499f81415f1b496df661a</epc>
+					<decoded>
+						<class>EPC_DECODED</class>
+						<type>gtin96</type>
+						<sku>02522629224707</sku>
+						<uri>urn:epc:tag:sgtin-96:1.2522629.022470.225869522458</uri>
+						<serial>225869522458</serial>
+					</decoded>
+					<ts>1603353691233</ts>
+					<deviceId>reader-01</deviceId>
+					<data>
+						<class>TAG_DATA</class>
+						<hexepc>303499f81415f1b496df661a</hexepc>
+						<props>
+							<prop>TIME_STAMP:1603353691233,</prop>
+							<prop>RSSI:-74,</prop>
+							<prop>RF_PHASE:42,</prop>
+							<prop>ANTENNA_PORT:1,</prop>
+							<prop>MUX1:0,</prop>
+							<prop>MUX2:0,</prop>
+							<prop>FREQ:866829,</prop>
+						</props>
+					</data>
+				</item>
+			</items>
+		</inventory>
+	</data>
+</inventory>
+

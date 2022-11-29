@@ -1,0 +1,58 @@
+current_heading:
+initial_x_pos: 0
+initial_y_pos: 0
+initial_z_pos: 0
+initial_thrust: 0.5
+
+Hover_sensor_altitude: 1
+Hover_sensor_altitude_max: 1.1 # min 2.7 meters last time
+Hover_sensor_altitude_min: 0.7 # min 2 meters last time
+Landing_sensor_altitude_min: 0.3
+Avoiding_obstacle_distance_min: 1000  # in mm
+Avoiding_obstacle_distance_hard_min: 500
+Blocking_movement_distance_min: 300 # in mm
+Unblocking_movement_distance_min: 400 # in mm
+
+# We should try from 0.45 at liftoff and giving more time
+Liftoff_thrust: 0.45 # 0.55 seems good, it is the last value we had in hover during the testing
+Hover_thrust: 0.45 # Last tested, probably 0.54 it is the hovering thrust 
+Landing_thrust: 0.45 # 0.55 seems good, probably more it will be better
+Moving_max_thrust: 0.45 # not tested, probably it works
+Moving_min_thrust: 0.45
+Liftoff_thrust_maximum: 0.7
+
+accumulating_thrust_soft: 0.001
+accumulating_thrust: 0.01 #(was 0.0005) 0.5 hover throttle / 0.0005 acc = 1000 loops (now 500loops),1000*0.005 time each loop (200hz)= 0.5sec
+Deaccumulating_thrust: 0.015
+
+Time_between_messages: 0.005
+
+Liftoff_time: 20
+Hover_time: 40
+Moving_time: 2
+Max_time_landing: 5
+Secure_time_landing: 10
+Avoiding_obstacle_time: 0.5
+Keyboard_control_time: 1
+move_desired_direction_time: 0.6
+move_opposite_direction_time: 0.05
+move_hover_time: 0.5
+ 
+angle_roll_left: -7 # in degrees
+angle_roll_right: 7 # in degrees 
+angle_pitch_back: -7 # in degrees
+angle_pitch_forward: 7 # in degrees 
+
+angle_roll_left_hard: -12 # in degrees
+angle_roll_right_hard: 12 # in degrees 
+angle_pitch_back_hard: -12 # in degrees
+angle_pitch_forward_hard: 12 # in degrees 
+
+angle_roll_left_right_trim: 0.8 # positive moving right / negative moving left
+angle_pitch_forward_back_trim: 0.4 # positive moving forward / negative moving backward
+
+angle_pitch_flow_max: 3
+angle_roll_flow_max: 3
+
+flow_rate_threshold: 200
+

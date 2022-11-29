@@ -1,0 +1,5 @@
+<launch>
+  <node name="database_robot" pkg="database_robot" type="database_controller.py" output="screen">
+          <rosparam file="$(find database_robot)/config/database_robot.yaml" command="load" subst_value="true" />
+  </node>
+</launch>

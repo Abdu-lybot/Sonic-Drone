@@ -1,0 +1,16 @@
+obstacle_range: 2.5
+raytrace_range: 3.0
+footprint: [[ 0.3,  0.3], [-0.3,  0.3], [-0.3, -0.3], [ 0.3, -0.3]]
+footprint_padding: 0.15
+robot_radius: 0.55
+inflation_radius: 2
+transform_tolerance: 10
+cost_scaling_factor: 5.5
+
+observation_sources: base_scan
+base_scan: {sensor frame: laser_link, data_type: PointCloud2,
+    topic: /scan_2D,
+    marking: true,
+    clearing: true,
+    min_obstacle_height: 0,
+    max_obstacle_height: 1.2}

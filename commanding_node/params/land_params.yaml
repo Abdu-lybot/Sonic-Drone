@@ -1,0 +1,5 @@
+land_height: 1
+threshold: 0.2                      
+down_sensor_distance: 0 
+final_land_threshold: 0.2           
+landing_step_distance: 0.05         

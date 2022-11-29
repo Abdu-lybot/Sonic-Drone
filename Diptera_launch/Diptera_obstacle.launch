@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<launch>
+	<!--param name="robot_description" command="$(find xacro)/xacro $(find AdvanDiptera_discription)/urdf/AdvanDiptera.xacro" />
+	<param name="use_gui" value="True"/>
+	<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" ></node>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" ></node>-->
+
+
+
+<include file="$(find astra_camera)/launch/astra.launch" />
+<include file="$(find pointcloud_to_laserscan)/launch/sample_node.launch" />
+<include file="$(find Diptera_launch)/camera_laser.launch" />
+
+<node pkg="tf" type="static_transform_publisher" name="astra_broadcaster" args="0 0 0 0 3.14 0 base_link astra_link  100" />
+<node pkg="tf" type="static_transform_publisher" name="link1_broadcaster" args="0 0 0 0 0 0 camera_pose_frame base_link  100" />
+
+</launch>

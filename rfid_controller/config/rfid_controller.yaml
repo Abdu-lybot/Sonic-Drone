@@ -1,0 +1,59 @@
+bag_topics:
+    - /amcl_pose
+    - /tf
+
+rfid:
+    read_power: 30
+    session: S1
+    readers:
+        - reader_ip: 192.168.15.101
+          reader_id: reader-01
+          rest_port: 3161
+          data_port: 3177
+#        - reader_ip: reader-02
+#          reader_id: reader-02
+#          rest_port: 3161
+#          data_port: 3177
+#        - reader_ip: reader-03
+#          reader_id: reader-03
+#          rest_port: 3161
+#          data_port: 3177
+    
+    # Parameters used only for sequential queue
+    queue_patience: 15
+    stop_start_wait: 1
+    ##################
+
+
+rfid_control:
+    
+    asynch: True
+    speed: 0.25
+    cycles_window: 1 #used only on seq
+    asynch_time_window: 3 #seconds
+    inventory_queue_patience: 2 #seconds
+    new_tags_move_th: 22 
+    new_tags_stop_th: 44
+
+    twist_angle: 0.5 #0.05 #0.005
+    minimum_distance_between_twists: 0.05
+
+    recalibrate_periodicity: 25 #minutes
+
+    use_session_tags: True
+
+    filter_inventory_by_param: False
+    filter_inventory_by_param_value: False
+
+queue_timeout: 60 #timeout of queues involved in reading/parsing/processing data 
+epc_publisher_periodicity: 1 # seconds
+
+baseline:
+    do_compute: False 
+    files: # Files in the folder config/baseline. Files should be a 1-field csv containing EPCs. Up to two files can be used. 
+        - baseline1
+        - baseline2
+
+do_compute_location: False
+
+wait_for_queues: True # Parameter used to avoid waiting for empty queues in simulation. In simulation location_queue gets full since timestamps do not match.

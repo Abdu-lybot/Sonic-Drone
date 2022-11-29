@@ -1,0 +1,18 @@
+ADVANNET/1.0
+Content-Length:494
+Content-Type:text/xml
+
+<?xml version="1.0" encoding="UTF-8"?>
+<eventMessage>
+	<type>eventMessage</type>
+	<ts>1603353691216</ts>
+	<status>OK</status>
+	<event>
+		<class>com.keonn.advannet.impl.event.DefaultAdvanNetEvent</class>
+		<type>ADVANNET_INFO</type>
+		<typeclass>com.keonn.spec.event.AdvanNetEvent$AdvanNetEventType</typeclass>
+		<advanNetId>AdvanNet-instance-6e:b6:a0:61:57:9c--1</advanNetId>
+		<deviceId>reader-01</deviceId>
+		<msg>Device[reader-01] started in mode: AUTONOMOUS</msg>
+	</event>
+</eventMessage>

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<launch>
+
+	<include file="$(find mavros)/launch/px4.launch">
+	</include>
+
+	<!--include file="$(find px4flow)/launch/px4flow.launch">
+	</include-->
+        <node name="serial_node" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyUSB0" ></node>
+
+        <!--node name="" pkg="" type="" />
+        <node name="" pkg="" type="" /-->
+
+
+</launch>

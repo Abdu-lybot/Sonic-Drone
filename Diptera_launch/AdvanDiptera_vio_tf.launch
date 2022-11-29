@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+
+<launch>
+	<!--param name="robot_description" command="$(find xacro)/xacro $(find AdvanDiptera_discription)/urdf/AdvanDiptera.xacro" />
+	<param name="use_gui" value="True"/>
+	<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" ></node>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" ></node-->
+<!--node pkg="commanding_node" name="commanding_node" type="gpio_diptera.py" output="screen" launch-prefix="sudo"></node>
+
+
+
+    <include file="$(find mavros)/launch/px4.launch" /-->
+<include file="$(find realsense2_camera)/launch/rs_t265.launch" />
+<include file="$(find vision_to_mavros)/launch/tf_to_mavros.launch" />
+
+
+
+<node pkg="tf" type="static_transform_publisher" name="tf_baseLink_cameraPose" args="0 0 0 0 -0.85 -0.09 camera_pose_frame base_link 1000" />
+
+<node pkg="tf" type="static_transform_publisher" name="tf_baselink_camera" args="0 0 0 0 0 0 base_link camera_link 1000" />
+<!--node pkg="tf" type="static_transform_publisher" name="tf_baselink_camera" args="0 0 0 0 0 3.14 base_link camera_link 1000" />-->
+<node pkg="tf" type="static_transform_publisher" name="tf_map_odom" args="0 0 0 0 0 0 map camera_odom_frame 10000" />
+<!--node pkg="tf" type="static_transform_publisher" name="tf_odom_base_link" args="0 0 0 0 0 0 odom base_link 1000" />-->
+</launch>

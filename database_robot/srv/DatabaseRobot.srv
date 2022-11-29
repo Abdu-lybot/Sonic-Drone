@@ -1,0 +1,16 @@
+string command #INSERT, SELECT, DELETE or UPDATE
+string table #The table to use
+Mission mission
+Reading[] readings
+Section section
+Shop shop
+Fixture fixture
+string[] field_list #list of fields for special operations that need to separate (Update, Select specific field...)
+---
+bool status  #True if the query is valid, false otherwise
+string message
+Mission[] missions
+Reading[] readings
+Section[] sections
+Shop[] shops
+Fixture[] fixtures

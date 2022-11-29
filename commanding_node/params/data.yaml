@@ -1,0 +1,47 @@
+# Rate for rospyrate
+rate_value: 20
+
+# Data for the movement of the drone in meters
+moving_x: 0
+moving_y: 0.5
+moving_z: 0
+
+
+# Data for the random movement of the drone in meters
+moving_random_distance: 0.5
+
+# Takeoff custom height in meters
+takeoff_height_value: 1.5
+
+# Takeoff default height in meters
+takeoff_height: 4
+
+# Yaw  in degrees
+yaw_degree_value: 180
+
+
+
+
+
+# Different variables
+imu: 
+gps: 
+local_pose:
+current_state:
+current_heading: 
+local_enu_position:
+
+cur_target_pose:
+global_target:
+
+received_new_task: False
+arm_state: False
+offboard_state: False
+received_imu: False
+frame: BODY
+
+state:
+
+
+
+

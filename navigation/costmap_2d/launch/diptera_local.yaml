@@ -1,0 +1,12 @@
+local_costmap:
+  global_frame: camera_odom_frame
+  robot_base_frame: camera_pose_frame
+  update_frequency: 1.0
+  publish_frequency: 0.5
+  static_map: false
+  rolling_window: true
+  width: 10.0
+  height: 10.0
+  resolution: 0.025
+  origin_x: 0.0
+  origin_y: 0.0

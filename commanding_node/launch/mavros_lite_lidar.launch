@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+
+	<include file="$(find mavros)/launch/px4.launch">
+	</include>
+
+        <node name="serial_node" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyUSB0" ></node>
+
+        <node name="laser_scan_obstacle_finder" pkg="commanding_node" type="Diptera_lidar.py" ></node>
+
+
+</launch>

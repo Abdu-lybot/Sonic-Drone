@@ -1,0 +1,35 @@
+<launch>
+  <master auto="start"/>
+
+  <!--- Run AMCL -->
+  <!--- <include file="$(find amcl)/examples/amcl_omni.launch" />-->
+  
+  <!-- Transform publisher from map to base_link -->
+  <!--node name="pose_tf" type="pose_tf" pkg="column" output="screen"/>-->
+  
+  <!-- Static transform publisher from map to local_origin -->
+  <!--node pkg="tf" type="static_transform_publisher" name="map_origin" args="0 0 0 3.14 0 0 /map /camera_odom_frame 100"/>
+<node pkg="tf" type="static_transform_publisher" name="base_origin" args="0 0 0 0 0 0 /camera_pose_frame /base_link 100"/>
+<node pkg="tf" type="static_transform_publisher" name="camera_origin" args="0 0 0 0 0 0 /base_link /laser_link 100"/>-->
+  <!-- Static transform publisher from fcu to camera_link -->
+  <!-- RPY = XYZ -->
+  <node pkg="tf" type="static_transform_publisher" name="camera_to_base" args="0 0 0 0 -0.46 0 /camera_pose_frame /camera_link 100"/>
+  
+  <!-- Move Base Package -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+
+    <rosparam file="$(find costmap_2d)/launch/commun_parameters.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find costmap_2d)/launch/commun_parameters.yaml" command="load" ns="local_costmap" />
+    <rosparam file="$(find costmap_2d)/launch/local_parameters.yaml" command="load" />
+    <rosparam file="$(find costmap_2d)/launch/global_parameters.yaml" command="load" />
+    <rosparam file="$(find costmap_2d)/launch/base_local_planner_params.yaml" command="load" />
+    <!--<rosparam file="$(find costmap_2d)/launch/base_global_planner_params.yaml" command="load" />-->
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS"/>
+    <param name="base_global_planner" value="navfn/NavfnROS"/>
+    <!--param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>-->
+    <!--rosparam file="$(find costmap_2d)/launch/base_local_planner_params.yaml" command="load" />-->
+    <!--param name="recovery_behavior_enabled" value="false"/> 
+    <param name="recovery_behaviour_enabled" value="false"/> 
+    <param name="clearing_rotation_allowed" value="false"/>-->
+  </node>
+</launch>

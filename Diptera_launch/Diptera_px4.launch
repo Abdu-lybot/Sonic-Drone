@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+
+<launch>
+	<param name="robot_description" command="$(find xacro)/xacro $(find AdvanDiptera_discription)/urdf/sonic.xacro" />
+	<param name="use_gui" value="False"/>
+	<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" ></node>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" ></node>
+<node pkg="commanding_node" name="commanding_node" type="gpio_diptera.py" output="screen" launch-prefix="sudo"></node>
+
+
+
+    <include file="$(find mavros)/launch/px4.launch" />
+
+
+
+</launch>

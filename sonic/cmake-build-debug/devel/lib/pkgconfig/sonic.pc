@@ -1,0 +1,8 @@
+prefix=/home/lybot/AdvanDiptera/src/sonic/cmake-build-debug/devel
+
+Name: sonic
+Description: Description of sonic
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

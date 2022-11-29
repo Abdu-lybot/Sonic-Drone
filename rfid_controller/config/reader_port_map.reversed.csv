@@ -1,0 +1,9 @@
+location_id,reader_id,reader_port,mux_port,mux_port2
+L1,reader-01,1,0,0
+L2,reader-01,2,0,0
+L3,reader-01,3,0,0
+L4,reader-01,4,0,0
+R4,reader-02,1,0,0
+R3,reader-02,2,0,0
+R2,reader-02,3,0,0
+R1,reader-02,4,0,0

@@ -1,0 +1,15 @@
+# ninja log v5
+1	1621	1649686220682257328	gtest/googlemock/CMakeFiles/gmock_main.dir/src/gmock-all.cc.o	65363b87220f2558
+0	2284	1649856473511542959	CMakeFiles/sonic.dir/src/sonic_v1.cpp.o	cf7ecd1510240949
+5	2970	1658940912626701722	CMakeFiles/sonicV2.dir/src/sonic_v2.cpp.o	8333afdc0801fc03
+2449	2568	1649686221630263838	gtest/googlemock/libgmock_main.so	fba19c65b7efd0fb
+1	1057	1669730388731750093	build.ninja	7f03251fda15cbce
+1	1023	1649686220086253236	gtest/googlemock/CMakeFiles/gmock_main.dir/src/gmock_main.cc.o	4bceb968468f803b
+2	1184	1658940332463146422	CMakeFiles/keyboard.dir/src/keyboard.cpp.o	8fc88f4f0fd964c8
+0	2449	1649686221510263014	gtest/googlemock/CMakeFiles/gmock_main.dir/usr/src/googletest/googletest/src/gtest-all.cc.o	da2abee4a67b7808
+2970	3164	1658940912822703033	devel/lib/sonic/sonicV2	ecca85ee9d33d53b
+1185	1370	1658940332651147421	devel/lib/sonic/keyboard	f34a2f6e0da79306
+2286	2407	1649856473635543866	devel/lib/sonic/sonic	d8d93938f7889e6d
+0	2	0	clean	ddf536fcf9392b5c
+3	2927	1669730401427843505	CMakeFiles/sonicV2.dir/src/sonic_v2.cpp.o	e918af1a66d88be3
+2927	3076	1669730401575844595	devel/lib/sonic/sonicV2	ecca85ee9d33d53b

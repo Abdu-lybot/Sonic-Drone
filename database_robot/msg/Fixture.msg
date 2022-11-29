@@ -1,0 +1,10 @@
+string id_fixture
+string id_shop
+string id_section
+string name
+string area
+string fix_group
+string ref_tag
+string x
+string y
+string z
