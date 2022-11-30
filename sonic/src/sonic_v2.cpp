@@ -2,7 +2,7 @@
 // Created by lybot on 13/4/22.
 //
 
-#include "sonic_v2.h"
+//#include "sonic_v2.h"
 //
 // Created by lybot on 11/4/22.
 //
@@ -21,6 +21,8 @@
 #include <nav_msgs/Odometry.h>
 //#include <mavros/mavros_plugin.h>
 #define PI 3.14
+#define GOAL_POSITION_MARGIN 0.15
+#define GOAL_YAW_MARGIN 10
 
 using namespace std;
 bool moving_status = true;
@@ -28,7 +30,7 @@ bool moving_status = true;
 mavros_msgs::State current_state;
 static float gps_x, gps_y, gps_z, gps_ori_x, gps_ori_y, gps_ori_z, gps_ori_w;
 static float vslam_x, vslam_y, vslam_z, vslam_ori_x, vslam_ori_y, vslam_ori_z, vslam_ori_w;
-static double key_throttle, key_pitch, key_gripper, roll, pitch, yaw;
+static double key_throttle, key_pitch, key_gripper, roll, pitch, yaw, yaw_degrees;
 static string flightmode;
 
 void cb_keyboard(geometry_msgs::Point msg){
@@ -65,6 +67,7 @@ void vslam_cb(nav_msgs::Odometry data){
     tf::Quaternion q(vslam_ori_x, vslam_ori_y, vslam_ori_z, vslam_ori_w);
     tf::Matrix3x3 m(q);
     m.getRPY(roll, pitch, yaw);
+    yaw_degrees = yaw * 180.0 / PI;
 //    cout << "VSLAM info" <<endl;
 //    cout << " x : " << vslam_x << " y : " << vslam_y << " z : "<< vslam_z<< endl;
 //    cout << " roll : " << roll << " pitch : "<< pitch << " yaw : " << yaw <<endl;
@@ -76,9 +79,9 @@ public:
     float steering_left = 1180;
     float steering_forward = 1500;
     float steering_right = 1840;
-    float brake_left = 1650;
+    float brake_left = 1750;
     float brake_neutral = 1180;
-    float brake_right = 1650;
+    float brake_right = 1750;
     ros::NodeHandle nh;
     ros::Subscriber keyboard_inp = nh.subscribe<geometry_msgs::Point>("keyboard_sonic",1, cb_keyboard);
     ros::Subscriber state_sub = nh.subscribe<mavros_msgs::State>
@@ -139,23 +142,134 @@ public:
         manual_pub.publish(cmd);
     }
 
-    void forward(float distance){
-        ROS_INFO("Sonic will move forward with %f from %lf", distance, vslam_x);
+    string cw_or_ccw(double yaw_diff){
+        if ((yaw_diff > 0 && yaw_diff <= 180) || (yaw_diff < 0 && yaw_diff >= 180)){
+            ROS_INFO_NAMED("Turn"," CCW is closer to goal");
+            return "ccw";
+        }else{
+            ROS_INFO_NAMED("Turn"," CW is closer to goal");
+            return "cw";
+        }
+    }
+    bool in_margin_angle(double yaw_diff){
+            if(abs(yaw_diff) > GOAL_YAW_MARGIN){
+                return true;
+                }
+            else{
+                ROS_ERROR("SONIC OUT OF MARGIN");
+                return false;
+            }
+    };
+    float get_distance(geometry_msgs::Point goal){
+        float d = sqrt(pow(goal.x - vslam_x,2) + pow(goal.y - vslam_y,2));
+        return d;
+    }
+    bool in_margin_dist(geometry_msgs::Point goal){
+
+        if (get_distance(goal) <  GOAL_POSITION_MARGIN) {
+            ROS_ERROR("Goal Reached");
+            return true;
+        }
+        else{
+            ROS_ERROR("Rolling Forward, distance left: %f", get_distance(goal));
+            return false;
+        }
+    }
+
+    void forward(geometry_msgs::Point goal){
+        ROS_INFO("Sonic is moving forward. Goal: (x:%lf, y:%lf). Current: (x:%lf, y:%lf).", goal.x, goal.y, vslam_x, vslam_y);
         manual_move(0, 0, 0, 000, 0, brake_neutral, brake_neutral, steering_forward,0);
-
     }
 
-    void turnccw(float angle){
-        ROS_INFO("Sonic will move left with %f from %lf ", angle, yaw);
+    void turnccw(double angle){
+        ROS_INFO("Sonic is moving left. Goal: %lf. Current: %lf.", angle, yaw_degrees);
         manual_move(0, 0, 0, 000, 0, brake_neutral, brake_left, steering_left,0);
-
     }
 
-    void turncw(float angle){
-        ROS_INFO("Sonic will move right with %f from %lf ", angle, yaw);
+    void turncw(double angle){
+        ROS_INFO("Sonic is moving right. Goal: %lf. Current: %lf.", angle, yaw_degrees);
         manual_move(0, 0, 0, 000, 0, brake_right, brake_neutral, steering_right,0);
-
     }
+
+    void roll_turn(float angle, ros::Rate rate){
+        double yaw_diff = angle - yaw_degrees;
+        while (in_margin_angle(yaw_diff)){
+            yaw_diff = angle - yaw_degrees;
+            if (cw_or_ccw(yaw_diff) == "ccw"){
+                turnccw(angle);
+                rate.sleep();
+                ros::spinOnce();
+            }
+            if(cw_or_ccw(yaw_diff) == "cw"){
+                turncw(angle);
+                rate.sleep();
+                ros::spinOnce();
+            }
+        }
+    }
+
+    void roll_forw(geometry_msgs::Point goal, ros::Rate rate){
+        while(!in_margin_dist(goal)){
+            forward(goal);
+            rate.sleep();
+            ros::spinOnce();
+        }
+    }
+
+    void warming_engines(ros::Rate rate){
+            ros::Time last_request = ros::Time::now();
+            while((ros::Time::now() - last_request < ros::Duration(4.0)) && moving_status) {
+                ROS_INFO("Warming Engines");
+                manual_move(0, 0, 0, 000, 0, brake_neutral, brake_neutral, steering_forward,0);
+                usleep(400000);
+                manual_move(0, 0, 0, 000, 0, brake_right, brake_neutral, steering_left,0);
+                usleep(400000);
+                manual_move(0, 0, 0, 000, 0, brake_neutral, brake_left, steering_right,0);
+                usleep(400000);
+                manual_move(0, 0, 0, 000, 0, brake_neutral, brake_neutral, steering_forward,0);
+                rate.sleep();
+            }
+    };
+    void stop_roll(ros::Rate rate){
+        ros::Time last_request = ros::Time::now();
+            while((ros::Time::now() - last_request < ros::Duration(3.0)) && moving_status) {
+                ROS_INFO("Stopping");
+                manual_move(0, 0, 0, 000, 0, brake_right, brake_left, steering_forward,0);
+                rate.sleep();
+            }
+    };
+    void rest(){
+        ROS_WARN("Resting motors to avoid burning");
+        manual_move(0, 0, 0, 000, 0, brake_neutral, brake_neutral, steering_forward,0);
+    }
+//    void turn(geometry_msgs::Point goal)
+//    {
+//        double dif_x = goal.x - vslam_x;
+//        double dif_y = goal.y - vslam_y;
+//        double goal_yaw = atan2(dif_y, dif_x) * 180.0 / PI + 180;
+//        double yaw_diff = goal_yaw - yaw_degrees;
+//
+//        while (abs(yaw_diff) > GOAL_YAW_MARGIN)
+//        {
+//            dif_x = goal.x - vslam_x;
+//            dif_y = goal.y - vslam_y;
+//            goal_yaw = atan2(dif_y, dif_x) * 180.0 / PI + 180;
+//            yaw_diff = goal_yaw - yaw_degrees;
+//
+//            if ((yaw_diff > 0 && yaw_diff <= 180) || (yaw_diff < 0 && yaw_diff >= 180))
+//            {
+//                turnccw(angle);
+//                rate.sleep();
+//                ros::spinOnce();
+//            }
+//            else
+//            {
+//                turncw(angle);
+//                rate.sleep();
+//                ros::spinOnce();
+//            }
+//        }
+//    }
 
     void set_moving_status(bool stopped = false){
         moving_status = stopped;
@@ -179,15 +293,12 @@ public:
     }
     void keep_armed(){
         mavros_msgs::SetMode offb_set_mode;
-        //offb_set_mode.request.custom_mode = "GUIDED_NOGPS";
         ros::Time last_request = ros::Time::now();
         offb_set_mode.request.custom_mode = flightmode;
         mavros_msgs::CommandBool arm_cmd;
         while((ros::Time::now() - last_request < ros::Duration(100.0)) && moving_status){
             set_mode_client.call(offb_set_mode);
-            //ROS_INFO("GUIDED_NOGPS enabled");
             arming_client.call(set_armed(&arm_cmd, true));
-            //ROS_INFO("Vehicle armed");
             usleep(100000);
         }
     }
@@ -211,52 +322,36 @@ int main(int argc, char **argv)
         rate.sleep();
     }
     while(ros::ok()){
-
         std::thread th(&SonicFirmware::keep_armed,sonic);
         if(moving_status){
-                sleep(1);
-                ros::Time last_request = ros::Time::now();
+            sleep(1);
+            sonic.warming_engines(rate);
+            double angle = 45;
+            //sonic.roll_turn(angle, rate);
+            //sonic.stop_roll(rate);
+            geometry_msgs::Point goal; goal.x = 0.2; goal.y = 0;
+            sonic.roll_forw(goal, rate);
+            sonic.stop_roll(rate);
+            ROS_WARN("GOAL 2");
+            goal.x = 0.3; goal.y = 0;
+            sonic.roll_forw(goal, rate);
+            sonic.stop_roll(rate);
+            sonic.rest();
 
-                while((ros::Time::now() - last_request < ros::Duration(3.0)) && moving_status) {
-                    ROS_INFO("Warming Engines");
-                    sonic.manual_move(0, 000, 000, 000, 0, 000, 000, 000, 000);
-                    rate.sleep();
-                }
-                last_request = ros::Time::now();
-
-                while((ros::Time::now() - last_request < ros::Duration(6.0)) && moving_status) {
-                    //cout << "Throttle : "<<key_throttle<<", Pitch : "<<key_pitch<<", Gripper : "<<key_gripper<<endl;  //for keyboard
-                    //sonic.manual_move(0, key_pitch, key_throttle, 000, 0, 0, 0, key_gripper, 0);
-                    sonic.turnccw(50);
-                    rate.sleep();
-                    ros::spinOnce();
-                }
-                last_request = ros::Time::now();
-
-                while((ros::Time::now() - last_request < ros::Duration(6.0)) && moving_status) {
-                    sonic.turncw(-50);
-                    rate.sleep();
-                    ros::spinOnce();
-                }
-                last_request = ros::Time::now();
-
-                while((ros::Time::now() - last_request < ros::Duration(6.0)) && moving_status) {
-                    sonic.forward(0.5);
-                    rate.sleep();
-                    ros::spinOnce();
-                }
-                last_request = ros::Time::now();
-
-                 while((ros::Time::now() - last_request < ros::Duration(3.0)) && moving_status) {
-                    ROS_INFO("stopping");
-                    sonic.manual_move(0, 0, 0000, 0, 0, 0, 0000, 000, 000);
-                    rate.sleep();
-                }
-                ROS_WARN("Function Ended");
-                sonic.set_moving_status(false);
+//                              for keyboard
+//                last_request = ros::Time::now();
+//                while((ros::Time::now() - last_request < ros::Duration(6.0)) && moving_status) {
+//                    //cout << "Throttle : "<<key_throttle<<", Pitch : "<<key_pitch<<", Gripper : "<<key_gripper<<endl;
+//                    //sonic.manual_move(0, key_pitch, key_throttle, 000, 0, 0, 0, key_gripper, 0);
+//                    sonic.turnccw(50);
+//                    rate.sleep();
+//                    ros::spinOnce();
+//                }
+            ROS_WARN("Function Ended");
+            sonic.set_moving_status(false);
 //              sonic.set_armed(&arm_cmd, false);
-                ros::spin();
-            }
+            ros::spin();
+        }
     }
     return 0;
 }
