@@ -17,7 +17,15 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   sensor_msgs
   std_msgs
+  message_generation
 )
+
+add_service_files(
+        FILES
+        pointService.srv
+)
+
+generate_messages(DEPENDENCIES geometry_msgs)
 
 
 ## System dependencies are found with CMake's conventions
@@ -143,6 +151,7 @@ include_directories(
 add_executable(sonic src/sonic_v1.cpp)
 add_executable(sonicV2 src/sonic_v2.cpp)
 add_executable(keyboard src/keyboard.cpp)
+add_executable(sonic_planner src/sonic_planner.cpp)
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -161,6 +170,9 @@ target_link_libraries(sonicV2
         ${catkin_LIBRARIES}
         )
 target_link_libraries(keyboard
+        ${catkin_LIBRARIES}
+        )
+target_link_libraries(sonic_planner
         ${catkin_LIBRARIES}
         )
 #############

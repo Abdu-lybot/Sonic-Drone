@@ -19,6 +19,7 @@
 #include <mavros_msgs/RCOut.h>
 #include <mavros_msgs/OverrideRCIn.h>
 #include <nav_msgs/Odometry.h>
+#include "sonic/pointService.h"
 //#include <mavros/mavros_plugin.h>
 #define PI 3.14
 #define GOAL_POSITION_MARGIN 0.15
@@ -98,6 +99,8 @@ public:
             ("mavros/set_mode");
     ros::Publisher manual_pub = nh.advertise<mavros_msgs::OverrideRCIn>
             ("mavros/rc/override", 1000);
+    ros::ServiceClient client = nh.serviceClient<sonic::pointService>("plannerService");
+    sonic::pointService srv;
 
 
     mavros_msgs::AttitudeTarget construct_message(float thr, float pitch, float yaw){
@@ -143,7 +146,7 @@ public:
     }
 
     string cw_or_ccw(double yaw_diff){
-        if ((yaw_diff > 0 && yaw_diff <= 180) || (yaw_diff < 0 && yaw_diff >= 180)){
+        if (yaw_diff > 0){
             ROS_INFO_NAMED("Turn"," CCW is closer to goal");
             return "ccw";
         }else{
@@ -218,7 +221,7 @@ public:
 
     void warming_engines(ros::Rate rate){
             ros::Time last_request = ros::Time::now();
-            while((ros::Time::now() - last_request < ros::Duration(4.0)) && moving_status) {
+            while((ros::Time::now() - last_request < ros::Duration(2.0)) && moving_status) {
                 ROS_INFO("Warming Engines");
                 manual_move(0, 0, 0, 000, 0, brake_neutral, brake_neutral, steering_forward,0);
                 usleep(400000);
@@ -242,34 +245,6 @@ public:
         ROS_WARN("Resting motors to avoid burning");
         manual_move(0, 0, 0, 000, 0, brake_neutral, brake_neutral, steering_forward,0);
     }
-//    void turn(geometry_msgs::Point goal)
-//    {
-//        double dif_x = goal.x - vslam_x;
-//        double dif_y = goal.y - vslam_y;
-//        double goal_yaw = atan2(dif_y, dif_x) * 180.0 / PI + 180;
-//        double yaw_diff = goal_yaw - yaw_degrees;
-//
-//        while (abs(yaw_diff) > GOAL_YAW_MARGIN)
-//        {
-//            dif_x = goal.x - vslam_x;
-//            dif_y = goal.y - vslam_y;
-//            goal_yaw = atan2(dif_y, dif_x) * 180.0 / PI + 180;
-//            yaw_diff = goal_yaw - yaw_degrees;
-//
-//            if ((yaw_diff > 0 && yaw_diff <= 180) || (yaw_diff < 0 && yaw_diff >= 180))
-//            {
-//                turnccw(angle);
-//                rate.sleep();
-//                ros::spinOnce();
-//            }
-//            else
-//            {
-//                turncw(angle);
-//                rate.sleep();
-//                ros::spinOnce();
-//            }
-//        }
-//    }
 
     void set_moving_status(bool stopped = false){
         moving_status = stopped;
@@ -321,21 +296,40 @@ int main(int argc, char **argv)
         ros::spinOnce();
         rate.sleep();
     }
+
     while(ros::ok()){
         std::thread th(&SonicFirmware::keep_armed,sonic);
         if(moving_status){
             sleep(1);
             sonic.warming_engines(rate);
-            double angle = 45;
+
+            sonic.srv.request.ready = true;
+            ros::service::waitForService("plannerService", ros::Duration(5));
+
+            geometry_msgs::Point goal;
+            double dif_x, dif_y, angle;
+            while (sonic.client.call(sonic.srv)) {
+                goal = sonic.srv.response.point;
+                dif_x = goal.x - vslam_x;
+                dif_y = goal.y - vslam_y;
+                angle = atan2(dif_y, dif_x) * 180.0 / PI;
+
+                sonic.roll_turn(angle, rate);
+                sonic.stop_roll(rate);
+                sonic.roll_forw(goal, rate);
+                sonic.stop_roll(rate);
+
+            }
+//                double angle = 45;
             //sonic.roll_turn(angle, rate);
-            //sonic.stop_roll(rate);
-            geometry_msgs::Point goal; goal.x = 0.2; goal.y = 0;
-            sonic.roll_forw(goal, rate);
             sonic.stop_roll(rate);
-            ROS_WARN("GOAL 2");
-            goal.x = 0.3; goal.y = 0;
-            sonic.roll_forw(goal, rate);
-            sonic.stop_roll(rate);
+//            geometry_msgs::Point goal; goal.x = 0.2; goal.y = 0;
+//            sonic.roll_forw(goal, rate);
+//            sonic.stop_roll(rate);
+//            ROS_WARN("GOAL 2");
+//            goal.x = 0.3; goal.y = 0;
+//            sonic.roll_forw(goal, rate);
+//            sonic.stop_roll(rate);
             sonic.rest();
 
 //                              for keyboard
