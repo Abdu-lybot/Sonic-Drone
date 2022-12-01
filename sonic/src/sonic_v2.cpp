@@ -83,6 +83,8 @@ public:
     float brake_left = 1750;
     float brake_neutral = 1180;
     float brake_right = 1750;
+    int pitch = 1800;
+    int throttle = 1200;
     ros::NodeHandle nh;
     ros::Subscriber keyboard_inp = nh.subscribe<geometry_msgs::Point>("keyboard_sonic",1, cb_keyboard);
     ros::Subscriber state_sub = nh.subscribe<mavros_msgs::State>
@@ -181,17 +183,17 @@ public:
 
     void forward(geometry_msgs::Point goal){
         ROS_INFO("Sonic is moving forward. Goal: (x:%lf, y:%lf). Current: (x:%lf, y:%lf).", goal.x, goal.y, vslam_x, vslam_y);
-        manual_move(0, 0, 0, 000, 0, brake_neutral, brake_neutral, steering_forward,0);
+        manual_move(0, pitch, throttle, 000, 0, brake_neutral, brake_neutral, steering_forward,0);
     }
 
     void turnccw(double angle){
         ROS_INFO("Sonic is moving left. Goal: %lf. Current: %lf.", angle, yaw_degrees);
-        manual_move(0, 0, 0, 000, 0, brake_neutral, brake_left, steering_left,0);
+        manual_move(0, pitch, throttle, 000, 0, brake_neutral, brake_left, steering_left,0);
     }
 
     void turncw(double angle){
         ROS_INFO("Sonic is moving right. Goal: %lf. Current: %lf.", angle, yaw_degrees);
-        manual_move(0, 0, 0, 000, 0, brake_right, brake_neutral, steering_right,0);
+        manual_move(0, pitch, throttle, 000, 0, brake_right, brake_neutral, steering_right,0);
     }
 
     void roll_turn(float angle, ros::Rate rate){
@@ -237,7 +239,7 @@ public:
         ros::Time last_request = ros::Time::now();
             while((ros::Time::now() - last_request < ros::Duration(3.0)) && moving_status) {
                 ROS_INFO("Stopping");
-                manual_move(0, 0, 0, 000, 0, brake_right, brake_left, steering_forward,0);
+                manual_move(0, pitch, 300, 000, 0, brake_right, brake_left, steering_forward,0);
                 rate.sleep();
             }
     };
