@@ -1,3 +1,4 @@
 bool ready
+geometry_msgs/Point initialPosition
 ---
 geometry_msgs/Point point
